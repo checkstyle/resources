@@ -1,9 +1,14 @@
-#!/usr/bin/bash
+#!/usr/bin/env bash
 
-VERSION=6.2
+VERSION=6.3-SNAPSHOT
 
-CHECKSTYLE_REPO=~/java/git-others/checkstyle/checkstyle
-JAR_ALL=$CHECKSTYLE_REPO/target/checkstyle-$VERSION-SNAPSHOT-all.jar
+CHECKSTYLE_REPO=/home/rivanov/checkstyle-test/checkstyle
+JAR_ALL=$CHECKSTYLE_REPO/target/checkstyle-$VERSION-all.jar
+
+if [ ! -f $JAR_ALL ]; then
+    echo "File $JAR_ALL not found!"
+    exit 1;
+fi
 
 cd /var/tmp/
 rm -rf checkstyle
@@ -16,15 +21,15 @@ hg clone http://hg.openjdk.java.net/jdk7/jdk7/jdk/
 
 java -jar $JAR_ALL \
      -c /google_checks.xml  \
-     -o checkstyle-report-checkstyle.txt -r checkstyle
+     -o checkstyle-report-checkstyle.txt checkstyle
 
 java -jar $JAR_ALL \
     -c /google_checks.xml  \
-    -o checkstyle-report-guava.txt -r guava-libraries
+    -o checkstyle-report-guava.txt guava-libraries
 
 java -jar $JAR_ALL \
     -c /sun_checks.xml  \
-    -o checkstyle-report-jdk.txt -r jdk/src/share/classes
+    -o checkstyle-report-jdk.txt jdk/src/share/classes
 
 echo "Grep for Exception:"
 
